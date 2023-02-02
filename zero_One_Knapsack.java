@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public class Longest_Increasing_Subsequence{
+public class zero_One_Knapsack{
 
 	static class FastReader {
         BufferedReader br;
@@ -59,8 +59,9 @@ public class Longest_Increasing_Subsequence{
     }
 
 	static int N = 100;
-    static int [] dp = new int [N];
-    static int [] a = new int [N];
+    static int [][] dp = new int [N][N];
+    static int [] wt = new int [N];
+    static int [] val = new int [N];
 
     public static void main(String[] args) {
 		
@@ -73,32 +74,41 @@ public class Longest_Increasing_Subsequence{
 		}
 		FastReader sc = new FastReader();
 		
-        Arrays.fill(dp, -1);
+        for(int i=0; i<N; i++){
+            for(int j=0; j<N; j++){
+                dp[i][j] = -1;
+            }
+        }
 
         int n = sc.nextInt();
+        int w = sc.nextInt();
 
         for(int i=0; i<n; i++){
-            a[i] = sc.nextInt();
+            wt[i] = sc.nextInt();
+            val[i] = sc.nextInt();
         }
 
-        int ans = 0;
-        for(int i=0; i<n; i++){
-            ans = Math.max(ans, lis(i));
-        }
-
-        System.out.println(ans)
+        System.out.println(Knapsack(n-1, w));
 
 
 	}
 
-    static int lis(int i){
-        if(dp[i] != -1) return dp[i];
-        int ans = 1;
-        for(int j=0; j<i; j++){
-            if(a[i] > a[j]){
-                ans = Math.max(ans, lis(j) + 1);
-            }
-        }
-        return dp[i] = ans;
+    static int Knapsack(int index, int wt_left){
+        int ans = Integer.MIN_VALUE;
+
+        if(wt_left == 0) return 0;
+
+        if(index < 0) return 0;
+
+        if(dp[index][wt_left] != -1) return dp[index][wt_left];
+
+        // dont choose item at index
+        ans = Knapsack(index-1, wt_left);
+
+        // choose item at index
+        if(wt_left - wt[index] >= 0)
+        ans = Math.max(ans, Knapsack(index-1, wt_left - wt[index])+ val[index]) ;
+
+        return dp[index][wt_left] = ans;
     }
 }
